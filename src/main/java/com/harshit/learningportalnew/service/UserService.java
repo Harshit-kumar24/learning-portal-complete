@@ -1,8 +1,11 @@
 package com.harshit.learningportalnew.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.harshit.learningportalnew.entity.CourseEntity;
+import com.harshit.learningportalnew.entity.FavouriteCourseEntity;
+import com.harshit.learningportalnew.entity.RegisteredCourseEntity;
 import com.harshit.learningportalnew.entity.UserEntity;
 
 public interface UserService {
@@ -17,28 +20,25 @@ public interface UserService {
 	UserEntity addUser(UserEntity user);
 
 	//LEARNER
-	//get all courses
-	List<CourseEntity> getAllCourses();
-
 	//get all courses by category
 	List<CourseEntity> getCoursesByCategory(CourseEntity.Category category);
 
 	//login user
-	UserEntity loginUser(String username, String password);
+	Optional<UserEntity> loginUser(Long userId);
 
 	//register user
 	UserEntity registerUser(UserEntity user);
 
 	//see purchased course
-	List<CourseEntity> purchasedCourses(String username, String password);
+	List<RegisteredCourseEntity> purchasedCourses(Long userId);
 
 	//purchase course
-	CourseEntity purchaseCourse(Long courseId);
+	RegisteredCourseEntity purchaseCourse(Long courseId, Long userId);
 
 	//Favorite course
-	CourseEntity favouriteCourse(Long registrationId);
+	FavouriteCourseEntity favouriteCourse(Long registrationId);
 
 	//see favorite courses
-	List<CourseEntity> seeFavouriteCourses(String username, String password);
+	List<FavouriteCourseEntity> seeFavouriteCourses(Long userId);
 
 }
