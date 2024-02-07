@@ -4,10 +4,12 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
-import com.harshit.learningportalnew.entity.RegisteredCourseEntity;
+import com.harshit.learningportalnew.entity.FavouriteCourseEntity;
 
-public interface FavouriteCourseRepository extends JpaRepository<FavouriteCourseRepository, Long> {
-	@Query("SELECT f FROM FavouriteCourseEntity F WHERE f.registeredCourse.id IN:registeredCourseIds")
-	List<RegisteredCourseEntity> findByRegId(Long userId);
+@Repository
+public interface FavouriteCourseRepository extends JpaRepository<FavouriteCourseEntity, Long> {
+	@Query("SELECT f FROM FavouriteCourseEntity f WHERE f.registeredCourse.registrationId = :registrationId")
+	List<FavouriteCourseEntity> findByRegistrationId(Long registrationId);
 }

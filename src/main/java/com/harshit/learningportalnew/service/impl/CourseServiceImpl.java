@@ -2,10 +2,13 @@ package com.harshit.learningportalnew.service.impl;
 
 import java.util.List;
 
+import org.springframework.stereotype.Service;
+
 import com.harshit.learningportalnew.entity.CourseEntity;
 import com.harshit.learningportalnew.repository.CourseRepository;
 import com.harshit.learningportalnew.service.CourseService;
 
+@Service
 public class CourseServiceImpl implements CourseService {
 
 	private final CourseRepository courseRepository;

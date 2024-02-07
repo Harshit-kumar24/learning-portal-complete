@@ -18,6 +18,8 @@ import com.harshit.learningportalnew.repository.RegisteredCourseRepository;
 import com.harshit.learningportalnew.repository.UserRepository;
 import com.harshit.learningportalnew.service.UserService;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -37,70 +39,71 @@ public class UserServiceImpl implements UserService {
 	//get all users
 	@Override
 	public List<UserEntity> getAllUsers() {
-		return userRepository.findAll();
+		return userRepository.findAll();//DONE
 	}
 
 	//deleting an user
 	@Override
 	public void deleteUser(Long id) {
-		userRepository.deleteById(id);
+		userRepository.deleteById(id);//DONE
 
 	}
 
 	//adding and user by a admin
 	@Override
 	public UserEntity addUser(UserEntity user) {
-		return userRepository.save(user);
+		return userRepository.save(user);//DONE
 	}
 
 	//get courses by category
 	@Override
 	public List<CourseEntity> getCoursesByCategory(Category category) {
-		return courseRepository.findByCategory(category);
+		return courseRepository.findByCategory(category);// DONE
 	}
 
 	//logging in an user
 	@Override
 	public Optional<UserEntity> loginUser(Long userId) {
-		return userRepository.findById(userId);
+		return userRepository.findById(userId);//DONE
 	}
 
 	//registering an user
 	@Override
 	public UserEntity registerUser(UserEntity user) {
-		return userRepository.save(user);
+		return userRepository.save(user);//DONE
 	}
 
 	//see all purchased courses
 	@Override
 	public List<RegisteredCourseEntity> purchasedCourses(Long userId) {
-		return registeredCourseRepository.findByUserId(userId);
+		//only service which is not done
+		return registeredCourseRepository.findByUserId(userId);//NOT DONE
 	}
 
 	//purchasing a course 
 	@Override
+	@Transactional
 	public RegisteredCourseEntity purchaseCourse(Long courseId, Long userId) {
 
 		Optional<CourseEntity> optionalCourse = courseRepository.findById(courseId);
+		Optional<UserEntity> optionalUser = userRepository.findById(userId);
 
-		if (optionalCourse.isPresent()) {
+		if (!optionalCourse.isEmpty() && !optionalUser.isEmpty()) {
 			CourseEntity course = optionalCourse.get();
+			UserEntity user = optionalUser.get();
 
-			Optional<UserEntity> optionalUser = userRepository.findById(userId);
-			if (optionalUser.isPresent()) {
-				UserEntity user = optionalUser.get();
+			RegisteredCourseEntity registeredCourse = new RegisteredCourseEntity();
+			registeredCourse.setCourse(course);
+			registeredCourse.setUser(user);
 
-				RegisteredCourseEntity registeredCourse = new RegisteredCourseEntity();
-				registeredCourse.setCourse(course);
-				registeredCourse.setUser(user);
+			RegisteredCourseEntity regCourse = registeredCourseRepository.save(registeredCourse);
 
-				return registeredCourse;
-			}
+			return regCourse;
 		}
-		RegisteredCourseEntity nullRegisteredCourse = null;
-		return nullRegisteredCourse;
+		return new RegisteredCourseEntity();
 	}
 
+	//adding a course to favourite
 	@Override
 	public FavouriteCourseEntity favouriteCourse(Long registrationId) {
 		Optional<RegisteredCourseEntity> regCourse = registeredCourseRepository.findById(registrationId);
@@ -112,22 +115,24 @@ public class UserServiceImpl implements UserService {
 
 			return favouriteCourseRepository.save(favouriteCourse);
 		}
-		return null;
+		return new FavouriteCourseEntity();//DONE
 	}
 
+	//listing all your favourite courses
 	@Override
 	public List<FavouriteCourseEntity> seeFavouriteCourses(Long userId) {
 		List<RegisteredCourseEntity> registeredCourses = registeredCourseRepository.findByUserId(userId);
+		List<FavouriteCourseEntity> favouriteCourses = new ArrayList<>();
 
 		// Extract IDs of registered courses
-		List<Long> registeredCoursesIds = registeredCourses.stream().map(RegisteredCourseEntity::getRegistrationId)
+		List<Long> registeredCourseIds = registeredCourses.stream().map(RegisteredCourseEntity::getRegistrationId)
 				.collect(Collectors.toList());
 
 		// Find favorite courses for the registered courses
-		List<FavouriteCourseEntity> favouriteCourses = new ArrayList<>();
-		for (Long id : registeredCoursesIds) {
-			FavouriteCourseEntity favouriteCourse = (FavouriteCourseEntity) favouriteCourseRepository.findByRegId(id);
-			favouriteCourses.add(favouriteCourse);
+		for (Long id : registeredCourseIds) {
+			List<FavouriteCourseEntity> favouriteCoursesForRegistrationId = favouriteCourseRepository
+					.findByRegistrationId(id);
+			favouriteCourses.addAll(favouriteCoursesForRegistrationId);
 		}
 
 		return favouriteCourses;
