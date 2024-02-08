@@ -7,12 +7,17 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import com.harshit.learningportalnew.dto.UserRequestDTO;
+import com.harshit.learningportalnew.dto.FavouriteCourseDTO;
+import com.harshit.learningportalnew.dto.RegisteredCourseDTO;
+import com.harshit.learningportalnew.dto.UserDTO;
 import com.harshit.learningportalnew.entity.CourseEntity;
 import com.harshit.learningportalnew.entity.CourseEntity.Category;
 import com.harshit.learningportalnew.entity.FavouriteCourseEntity;
 import com.harshit.learningportalnew.entity.RegisteredCourseEntity;
 import com.harshit.learningportalnew.entity.UserEntity;
+import com.harshit.learningportalnew.mapper.FavouriteCoursePopulator;
+import com.harshit.learningportalnew.mapper.RegisteredCoursePopulator;
+import com.harshit.learningportalnew.mapper.UserPopulator;
 import com.harshit.learningportalnew.repository.CourseRepository;
 import com.harshit.learningportalnew.repository.FavouriteCourseRepository;
 import com.harshit.learningportalnew.repository.RegisteredCourseRepository;
@@ -58,8 +63,13 @@ public class UserServiceImpl implements UserService {
 
 	//adding and user by a admin
 	@Override
-	public UserEntity addUser(UserEntity user) {
-		return userRepository.save(user);
+	public UserDTO addUser(UserDTO user) {
+
+		UserEntity userEntity = UserPopulator.INSTANCE.populateUser(user);
+		UserEntity resUserEntity = userRepository.save(userEntity);
+		UserDTO resUserDTO = UserPopulator.INSTANCE.userEntitytoDTO(resUserEntity);
+
+		return resUserDTO;
 	}
 
 	//get courses by category
@@ -76,21 +86,21 @@ public class UserServiceImpl implements UserService {
 
 	//registering an user
 	@Override
-	public UserEntity registerUser(UserRequestDTO user) {
+	public UserDTO registerUser(UserDTO user) {
 
-		UserEntity userEntity = new UserEntity();
-		userEntity.setUsername(user.getUsername());
-		userEntity.setPassword(user.getPassword());
-		userEntity.setRole(user.getRole());
+		UserEntity userEntity = UserPopulator.INSTANCE.populateUser(user);
 
-		return userRepository.save(userEntity);//DONE
+		UserEntity ressUserEntity = userRepository.save(userEntity);
+		UserDTO resUserDTO = UserPopulator.INSTANCE.userEntitytoDTO(ressUserEntity);
+
+		return resUserDTO;
 
 	}
 
 	//purchasing a course 
 	@Override
 	@Transactional
-	public RegisteredCourseEntity purchaseCourse(Long courseId, Long userId) {
+	public RegisteredCourseDTO purchaseCourse(Long courseId, Long userId) {
 
 		//finding if the course and user exist
 		Optional<CourseEntity> optionalCourse = courseRepository.findById(courseId);
@@ -108,15 +118,17 @@ public class UserServiceImpl implements UserService {
 
 			//saving the registered course
 			RegisteredCourseEntity regCourse = registeredCourseRepository.save(registeredCourse);
+			RegisteredCourseDTO registeredCourseDTO = RegisteredCoursePopulator.INSTANCE
+					.regCourseEntitytoDTO(regCourse);
 
-			return regCourse;
+			return registeredCourseDTO;
 		}
-		return new RegisteredCourseEntity();
+		return new RegisteredCourseDTO();
 	}
 
 	//adding a course to favourite
 	@Override
-	public FavouriteCourseEntity favouriteCourse(Long registrationId) {
+	public FavouriteCourseDTO favouriteCourse(Long registrationId) {
 		// finding if the registered course exist
 		Optional<RegisteredCourseEntity> regCourse = registeredCourseRepository.findById(registrationId);
 
@@ -126,9 +138,10 @@ public class UserServiceImpl implements UserService {
 			FavouriteCourseEntity favouriteCourse = new FavouriteCourseEntity();
 			favouriteCourse.setRegisteredCourse(reigisteredCourse);
 
-			return favouriteCourseRepository.save(favouriteCourse);
+			FavouriteCourseEntity favCourse = favouriteCourseRepository.save(favouriteCourse);
+			FavouriteCourseDTO favouriteCourseDTO = FavouriteCoursePopulator.INSTANCE.favCourseEntitytoDTO(favCourse);
 		}
-		return new FavouriteCourseEntity();
+		return new FavouriteCourseDTO();
 	}
 
 	//listing all your favourite courses

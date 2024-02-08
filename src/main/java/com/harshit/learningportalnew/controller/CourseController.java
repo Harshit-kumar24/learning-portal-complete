@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.harshit.learningportalnew.dto.CourseDTO;
 import com.harshit.learningportalnew.entity.CourseEntity;
 import com.harshit.learningportalnew.entity.UserEntity;
 import com.harshit.learningportalnew.entity.UserEntity.Role;
@@ -43,7 +44,7 @@ public class CourseController {
 
 	//ADD COURSES
 	@PostMapping
-	public CourseEntity addCourse(@RequestBody CourseEntity course, @RequestHeader Long id) {
+	public CourseDTO addCourse(@RequestBody CourseDTO course, @RequestHeader Long id) {
 		//finding the author from the passed user_id
 		Optional<UserEntity> author = userService.getUser(id);
 
@@ -54,7 +55,7 @@ public class CourseController {
 			return courseService.addCourse(course);
 		}
 		//return empty course
-		return new CourseEntity();
+		return new CourseDTO();
 	}
 
 	//DELETE COURSES
@@ -73,7 +74,7 @@ public class CourseController {
 
 	//UPDATE COURSES
 	@PutMapping
-	public CourseEntity updateCourse(@RequestBody CourseEntity course, @RequestHeader Long user_Id) {
+	public CourseDTO updateCourse(@RequestBody CourseDTO course, @RequestHeader Long user_Id) {
 		//finding if the user is present
 		Optional<UserEntity> isAuthor = userService.getUser(user_Id);
 
@@ -82,6 +83,6 @@ public class CourseController {
 			log.info("course updated");
 			return courseService.updateCourse(course);
 		}
-		return new CourseEntity();
+		return new CourseDTO();
 	}
 }

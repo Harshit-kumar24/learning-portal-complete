@@ -15,12 +15,12 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.harshit.learningportalnew.dto.UserRequestDTO;
-import com.harshit.learningportalnew.dto.UserResponseDTO;
+import com.harshit.learningportalnew.dto.FavouriteCourseDTO;
+import com.harshit.learningportalnew.dto.RegisteredCourseDTO;
+import com.harshit.learningportalnew.dto.UserDTO;
 import com.harshit.learningportalnew.entity.CourseEntity;
 import com.harshit.learningportalnew.entity.CourseEntity.Category;
 import com.harshit.learningportalnew.entity.FavouriteCourseEntity;
-import com.harshit.learningportalnew.entity.RegisteredCourseEntity;
 import com.harshit.learningportalnew.entity.UserEntity;
 import com.harshit.learningportalnew.entity.UserEntity.Role;
 import com.harshit.learningportalnew.service.UserService;
@@ -81,26 +81,21 @@ public class UserController {
 
 	//REGISTER USER
 	@PostMapping
-	public UserResponseDTO registerUser(@RequestBody UserRequestDTO user) {
+	public UserDTO registerUser(@RequestBody UserDTO user) {
 		//hashing the password
 		String hashedPassword = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
 		user.setPassword(hashedPassword);
 
 		log.info("user Registered:{}", user);
 		//registering the user
-		UserEntity resUser = userService.registerUser(user);
-		UserResponseDTO resUserDTO = new UserResponseDTO();
-		//giving only username and role in response
-		resUserDTO.setRole(resUser.getRole());
-		resUserDTO.setUsername(resUser.getUsername());
-
-		return resUserDTO;
+		return userService.registerUser(user);
 
 	}
 
 	//PURCHASE COURSE
 	@PostMapping("/purchase/{courseId}")
-	public RegisteredCourseEntity purchaseCourse(@RequestHeader Long userId, @PathVariable Long courseId) {
+	public RegisteredCourseDTO purchaseCourse(@RequestHeader Long userId, @PathVariable Long courseId) {
+
 		log.info("course purchased:{}", courseId);
 		return userService.purchaseCourse(courseId, userId);
 
@@ -108,7 +103,8 @@ public class UserController {
 
 	//ADDING A FAVOURITE COURSE
 	@PostMapping("/favourite/{registrationId}")
-	public FavouriteCourseEntity addFavouriteCourse(@PathVariable Long registrationId) {
+	public FavouriteCourseDTO addFavouriteCourse(@PathVariable Long registrationId) {
+
 		log.info("course added to favourites");
 		return userService.favouriteCourse(registrationId);
 	}
@@ -116,6 +112,7 @@ public class UserController {
 	//SEE FAVOURITE COURSE
 	@GetMapping("/favourite/seeAll/{userId}")
 	public List<FavouriteCourseEntity> seeAllFavourite(@PathVariable Long userId) {
+
 		log.info("listing all the favourite courses");
 		return userService.seeFavouriteCourses(userId);
 	}

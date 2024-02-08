@@ -3,10 +3,11 @@ package com.harshit.learningportalnew.service;
 import java.util.List;
 import java.util.Optional;
 
-import com.harshit.learningportalnew.dto.UserRequestDTO;
+import com.harshit.learningportalnew.dto.FavouriteCourseDTO;
+import com.harshit.learningportalnew.dto.RegisteredCourseDTO;
+import com.harshit.learningportalnew.dto.UserDTO;
 import com.harshit.learningportalnew.entity.CourseEntity;
 import com.harshit.learningportalnew.entity.FavouriteCourseEntity;
-import com.harshit.learningportalnew.entity.RegisteredCourseEntity;
 import com.harshit.learningportalnew.entity.UserEntity;
 
 public interface UserService {
@@ -21,7 +22,7 @@ public interface UserService {
 	void deleteUser(Long id);
 
 	//add new users
-	UserEntity addUser(UserEntity user);
+	UserDTO addUser(UserDTO user);
 
 	//LEARNER
 	//get all courses by category
@@ -31,13 +32,13 @@ public interface UserService {
 	Optional<UserEntity> loginUser(Long userId);
 
 	//register user
-	UserEntity registerUser(UserRequestDTO user);
+	UserDTO registerUser(UserDTO user);
 
 	//purchase course
-	RegisteredCourseEntity purchaseCourse(Long courseId, Long userId);
+	RegisteredCourseDTO purchaseCourse(Long courseId, Long userId);
 
 	//Favorite course
-	FavouriteCourseEntity favouriteCourse(Long registrationId);
+	FavouriteCourseDTO favouriteCourse(Long registrationId);
 
 	//see favorite courses
 	List<FavouriteCourseEntity> seeFavouriteCourses(Long userId);

@@ -2,6 +2,7 @@ package com.harshit.learningportalnew.service;
 
 import java.util.List;
 
+import com.harshit.learningportalnew.dto.CourseDTO;
 import com.harshit.learningportalnew.entity.CourseEntity;
 
 public interface CourseService {
@@ -11,12 +12,12 @@ public interface CourseService {
 	List<CourseEntity> getAllCourses();
 
 	//add courses
-	CourseEntity addCourse(CourseEntity course);
+	CourseDTO addCourse(CourseDTO course);
 
 	//delete courses
 	void deleteCourse(Long courseId);
 
 	//update course
-	CourseEntity updateCourse(CourseEntity course);
+	CourseDTO updateCourse(CourseDTO course);
 
 }

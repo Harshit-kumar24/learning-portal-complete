@@ -5,7 +5,9 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.harshit.learningportalnew.dto.CourseDTO;
 import com.harshit.learningportalnew.entity.CourseEntity;
+import com.harshit.learningportalnew.mapper.CoursePopulator;
 import com.harshit.learningportalnew.repository.CourseRepository;
 import com.harshit.learningportalnew.service.CourseService;
 
@@ -24,8 +26,13 @@ public class CourseServiceImpl implements CourseService {
 	}
 
 	@Override
-	public CourseEntity addCourse(CourseEntity course) {
-		return courseRepository.save(course);
+	public CourseDTO addCourse(CourseDTO course) {
+
+		CourseEntity courseEntity = CoursePopulator.INSTANCE.populateCourse(course);
+		CourseEntity resCourse = courseRepository.save(courseEntity);
+
+		CourseDTO resCourseDTO = CoursePopulator.INSTANCE.courseEntityToDTO(resCourse);
+		return resCourseDTO;
 	}
 
 	@Override
@@ -34,26 +41,24 @@ public class CourseServiceImpl implements CourseService {
 	}
 
 	@Override
-	public CourseEntity updateCourse(CourseEntity course) {
+	public CourseDTO updateCourse(CourseDTO course) {
 		//checking if the course exists
 		Optional<CourseEntity> existingCourse = courseRepository.findById(course.getCourseId());
 
 		//if course exists
 		if (existingCourse.isPresent()) {
 
-			CourseEntity updatedCourse = existingCourse.get();
-
-			updatedCourse.setTitle(course.getTitle());
-			updatedCourse.setDescription(course.getDescription());
-			updatedCourse.setPrice(course.getPrice());
-			updatedCourse.setCategory(course.getCategory());
+			CourseEntity updatedCourse = CoursePopulator.INSTANCE.populateCourse(course);
 
 			//saving the course
-			return courseRepository.save(updatedCourse);
+			CourseEntity changedCourse = courseRepository.save(updatedCourse);
+			CourseDTO resCourseDTO = CoursePopulator.INSTANCE.courseEntityToDTO(changedCourse);
+
+			return resCourseDTO;
 
 		}
 		//returning empty course
-		return new CourseEntity();
+		return new CourseDTO();
 	}
 
 }
