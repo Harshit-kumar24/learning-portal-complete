@@ -3,6 +3,7 @@ package com.harshit.learningportalnew.controller;
 import java.util.List;
 import java.util.Optional;
 
+import org.mindrot.jbcrypt.BCrypt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,6 +20,7 @@ import com.harshit.learningportalnew.entity.CourseEntity.Category;
 import com.harshit.learningportalnew.entity.FavouriteCourseEntity;
 import com.harshit.learningportalnew.entity.RegisteredCourseEntity;
 import com.harshit.learningportalnew.entity.UserEntity;
+import com.harshit.learningportalnew.entity.UserEntity.Role;
 import com.harshit.learningportalnew.service.UserService;
 
 @RestController
@@ -41,9 +43,13 @@ public class UserController {
 
 	//DELETE USERS
 	@DeleteMapping("{id}")
-	public void deleteUser(@PathVariable Long id) {
-		userService.deleteUser(id);
-		log.info("user deleted");
+	public void deleteUser(@PathVariable Long id, @RequestHeader Long userId) {
+		Optional<UserEntity> isAdmin = userService.getUser(userId);
+
+		if (isAdmin.isPresent() && (isAdmin.get().getRole() == Role.ADMIN)) {
+			userService.deleteUser(id);
+			log.info("user deleted");
+		}
 	}//WORKING
 
 	//GET ALL COURSES BY CATEGORY
@@ -55,17 +61,25 @@ public class UserController {
 
 	//LOGIN USER
 	@GetMapping("{id}")
-	public Optional<UserEntity> loginUser(@PathVariable Long id) {
-		log.info("user loggedIn");
-		return userService.loginUser(id);
+	public Optional<UserEntity> loginUser(@PathVariable Long id, @RequestHeader Long userId) {
+		Optional<UserEntity> isUser = userService.getUser(userId);
+
+		if (isUser.isPresent()) {
+			log.info("user loggedIn");
+			return userService.loginUser(id);
+		}
+		return Optional.empty();
 	}//WORKING
 
 	//REGISTER USER
 	@PostMapping
 	public UserEntity registerUser(@RequestBody UserEntity user) {
+		String hashedPassword = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
+		user.setPassword(hashedPassword);
+
 		log.info("user Registered:{}", user);
 		return userService.registerUser(user);
-	}//WORKING
+	}
 
 	//PURCHASE COURSE
 	@PostMapping("/purchase/{courseId}")
