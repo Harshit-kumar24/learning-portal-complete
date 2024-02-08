@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.harshit.learningportalnew.dto.UserRequestDTO;
+import com.harshit.learningportalnew.dto.UserResponseDTO;
 import com.harshit.learningportalnew.entity.CourseEntity;
 import com.harshit.learningportalnew.entity.CourseEntity.Category;
 import com.harshit.learningportalnew.entity.FavouriteCourseEntity;
@@ -73,12 +75,18 @@ public class UserController {
 
 	//REGISTER USER
 	@PostMapping
-	public UserEntity registerUser(@RequestBody UserEntity user) {
+	public UserResponseDTO registerUser(@RequestBody UserRequestDTO user) {
 		String hashedPassword = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
 		user.setPassword(hashedPassword);
 
 		log.info("user Registered:{}", user);
-		return userService.registerUser(user);
+		UserEntity resUser = userService.registerUser(user);
+		UserResponseDTO resUserDTO = new UserResponseDTO();
+		resUserDTO.setRole(resUser.getRole());
+		resUserDTO.setUsername(resUser.getUsername());
+
+		return resUserDTO;
+
 	}
 
 	//PURCHASE COURSE

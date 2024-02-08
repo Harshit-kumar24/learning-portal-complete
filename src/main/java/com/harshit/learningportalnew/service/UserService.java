@@ -3,6 +3,7 @@ package com.harshit.learningportalnew.service;
 import java.util.List;
 import java.util.Optional;
 
+import com.harshit.learningportalnew.dto.UserRequestDTO;
 import com.harshit.learningportalnew.entity.CourseEntity;
 import com.harshit.learningportalnew.entity.FavouriteCourseEntity;
 import com.harshit.learningportalnew.entity.RegisteredCourseEntity;
@@ -30,7 +31,7 @@ public interface UserService {
 	Optional<UserEntity> loginUser(Long userId);
 
 	//register user
-	UserEntity registerUser(UserEntity user);
+	UserEntity registerUser(UserRequestDTO user);
 
 	//purchase course
 	RegisteredCourseEntity purchaseCourse(Long courseId, Long userId);

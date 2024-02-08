@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.harshit.learningportalnew.dto.UserRequestDTO;
 import com.harshit.learningportalnew.entity.CourseEntity;
 import com.harshit.learningportalnew.entity.CourseEntity.Category;
 import com.harshit.learningportalnew.entity.FavouriteCourseEntity;
@@ -40,6 +41,11 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public List<UserEntity> getAllUsers() {
 		return userRepository.findAll();//DONE
+
+		//		List<UserEntity> userEntities = userRepository.findAll();
+		//		
+		//		List<UserResponseDTO> userResponseDTOs;
+
 	}
 
 	@Override
@@ -74,8 +80,14 @@ public class UserServiceImpl implements UserService {
 
 	//registering an user
 	@Override
-	public UserEntity registerUser(UserEntity user) {
-		return userRepository.save(user);//DONE
+	public UserEntity registerUser(UserRequestDTO user) {
+		UserEntity userEntity = new UserEntity();
+		userEntity.setUsername(user.getUsername());
+		userEntity.setPassword(user.getPassword());
+		userEntity.setRole(user.getRole());
+
+		return userRepository.save(userEntity);//DONE
+
 	}
 
 	//purchasing a course 
