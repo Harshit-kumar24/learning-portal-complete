@@ -39,49 +39,58 @@ public class UserController {
 	//GET ALL USERS
 	@GetMapping
 	public List<UserEntity> getAllUser() {
+
 		log.info("showing all users");
 		return userService.getAllUsers();
-	}//WORKING
+	}
 
 	//DELETE USERS
 	@DeleteMapping("{id}")
 	public void deleteUser(@PathVariable Long id, @RequestHeader Long userId) {
+		//finding if the users exist
 		Optional<UserEntity> isAdmin = userService.getUser(userId);
 
+		//checking if the user exists and is admin
 		if (isAdmin.isPresent() && (isAdmin.get().getRole() == Role.ADMIN)) {
 			userService.deleteUser(id);
 			log.info("user deleted");
 		}
-	}//WORKING
+	}
 
 	//GET ALL COURSES BY CATEGORY
 	@GetMapping("/categories")
 	public List<CourseEntity> getByCategory(@RequestHeader Category category) {
+		//listing courses by category
 		log.info("Listing all the courses by category:{} ", category);
 		return userService.getCoursesByCategory(category);
-	}//WORKING
+	}
 
 	//LOGIN USER
 	@GetMapping("{id}")
 	public Optional<UserEntity> loginUser(@PathVariable Long id, @RequestHeader Long userId) {
+		//finding the user
 		Optional<UserEntity> isUser = userService.getUser(userId);
 
+		//if user exists
 		if (isUser.isPresent()) {
 			log.info("user loggedIn");
 			return userService.loginUser(id);
 		}
 		return Optional.empty();
-	}//WORKING
+	}
 
 	//REGISTER USER
 	@PostMapping
 	public UserResponseDTO registerUser(@RequestBody UserRequestDTO user) {
+		//hashing the password
 		String hashedPassword = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
 		user.setPassword(hashedPassword);
 
 		log.info("user Registered:{}", user);
+		//registering the user
 		UserEntity resUser = userService.registerUser(user);
 		UserResponseDTO resUserDTO = new UserResponseDTO();
+		//giving only username and role in response
 		resUserDTO.setRole(resUser.getRole());
 		resUserDTO.setUsername(resUser.getUsername());
 

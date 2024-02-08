@@ -40,11 +40,7 @@ public class UserServiceImpl implements UserService {
 	//get all users
 	@Override
 	public List<UserEntity> getAllUsers() {
-		return userRepository.findAll();//DONE
-
-		//		List<UserEntity> userEntities = userRepository.findAll();
-		//		
-		//		List<UserResponseDTO> userResponseDTOs;
+		return userRepository.findAll();
 
 	}
 
@@ -56,31 +52,32 @@ public class UserServiceImpl implements UserService {
 	//deleting an user
 	@Override
 	public void deleteUser(Long id) {
-		userRepository.deleteById(id);//DONE
+		userRepository.deleteById(id);
 
 	}
 
 	//adding and user by a admin
 	@Override
 	public UserEntity addUser(UserEntity user) {
-		return userRepository.save(user);//DONE
+		return userRepository.save(user);
 	}
 
 	//get courses by category
 	@Override
 	public List<CourseEntity> getCoursesByCategory(Category category) {
-		return courseRepository.findByCategory(category);// DONE
+		return courseRepository.findByCategory(category);
 	}
 
 	//logging in an user
 	@Override
 	public Optional<UserEntity> loginUser(Long userId) {
-		return userRepository.findById(userId);//DONE
+		return userRepository.findById(userId);
 	}
 
 	//registering an user
 	@Override
 	public UserEntity registerUser(UserRequestDTO user) {
+
 		UserEntity userEntity = new UserEntity();
 		userEntity.setUsername(user.getUsername());
 		userEntity.setPassword(user.getPassword());
@@ -95,17 +92,21 @@ public class UserServiceImpl implements UserService {
 	@Transactional
 	public RegisteredCourseEntity purchaseCourse(Long courseId, Long userId) {
 
+		//finding if the course and user exist
 		Optional<CourseEntity> optionalCourse = courseRepository.findById(courseId);
 		Optional<UserEntity> optionalUser = userRepository.findById(userId);
 
+		//if course and user exist
 		if (!optionalCourse.isEmpty() && !optionalUser.isEmpty()) {
 			CourseEntity course = optionalCourse.get();
 			UserEntity user = optionalUser.get();
 
+			//set course and user reference in registered course
 			RegisteredCourseEntity registeredCourse = new RegisteredCourseEntity();
 			registeredCourse.setCourse(course);
 			registeredCourse.setUser(user);
 
+			//saving the registered course
 			RegisteredCourseEntity regCourse = registeredCourseRepository.save(registeredCourse);
 
 			return regCourse;
@@ -116,8 +117,10 @@ public class UserServiceImpl implements UserService {
 	//adding a course to favourite
 	@Override
 	public FavouriteCourseEntity favouriteCourse(Long registrationId) {
+		// finding if the registered course exist
 		Optional<RegisteredCourseEntity> regCourse = registeredCourseRepository.findById(registrationId);
 
+		//if it exist the find it in favourites and return it
 		if (regCourse.isPresent()) {
 			RegisteredCourseEntity reigisteredCourse = regCourse.get();
 			FavouriteCourseEntity favouriteCourse = new FavouriteCourseEntity();
@@ -125,13 +128,15 @@ public class UserServiceImpl implements UserService {
 
 			return favouriteCourseRepository.save(favouriteCourse);
 		}
-		return new FavouriteCourseEntity();//DONE
+		return new FavouriteCourseEntity();
 	}
 
 	//listing all your favourite courses
 	@Override
 	public List<FavouriteCourseEntity> seeFavouriteCourses(Long userId) {
+		//finding all registered courses
 		List<RegisteredCourseEntity> registeredCourses = registeredCourseRepository.findByUserId(userId);
+		//List to store favourite courses for a specific user
 		List<FavouriteCourseEntity> favouriteCourses = new ArrayList<>();
 
 		// Extract IDs of registered courses

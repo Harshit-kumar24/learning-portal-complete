@@ -35,8 +35,10 @@ public class CourseServiceImpl implements CourseService {
 
 	@Override
 	public CourseEntity updateCourse(CourseEntity course) {
+		//checking if the course exists
 		Optional<CourseEntity> existingCourse = courseRepository.findById(course.getCourseId());
 
+		//if course exists
 		if (existingCourse.isPresent()) {
 
 			CourseEntity updatedCourse = existingCourse.get();
@@ -46,9 +48,11 @@ public class CourseServiceImpl implements CourseService {
 			updatedCourse.setPrice(course.getPrice());
 			updatedCourse.setCategory(course.getCategory());
 
+			//saving the course
 			return courseRepository.save(updatedCourse);
 
 		}
+		//returning empty course
 		return new CourseEntity();
 	}
 
