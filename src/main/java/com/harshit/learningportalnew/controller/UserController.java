@@ -19,25 +19,23 @@ import com.harshit.learningportalnew.entity.CourseEntity.Category;
 import com.harshit.learningportalnew.entity.FavouriteCourseEntity;
 import com.harshit.learningportalnew.entity.RegisteredCourseEntity;
 import com.harshit.learningportalnew.entity.UserEntity;
-import com.harshit.learningportalnew.service.CourseService;
 import com.harshit.learningportalnew.service.UserService;
 
 @RestController
 @RequestMapping("/users")
 public class UserController {
 	private final UserService userService;
-	private final CourseService courseService;
 
-	private static final Logger log = LoggerFactory.getLogger(CourseController.class);
+	private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
-	public UserController(UserService userService, CourseService courseService) {
+	public UserController(UserService userService) {
 		this.userService = userService;
-		this.courseService = courseService;
 	}
 
 	//GET ALL USERS
 	@GetMapping
 	public List<UserEntity> getAllUser() {
+		log.info("showing all users");
 		return userService.getAllUsers();
 	}//WORKING
 
@@ -45,42 +43,49 @@ public class UserController {
 	@DeleteMapping("{id}")
 	public void deleteUser(@PathVariable Long id) {
 		userService.deleteUser(id);
+		log.info("user deleted");
 	}//WORKING
 
 	//GET ALL COURSES BY CATEGORY
 	@GetMapping("/categories")
 	public List<CourseEntity> getByCategory(@RequestHeader Category category) {
+		log.info("Listing all the courses by category:{} ", category);
 		return userService.getCoursesByCategory(category);
 	}//WORKING
 
 	//LOGIN USER
 	@GetMapping("{id}")
 	public Optional<UserEntity> loginUser(@PathVariable Long id) {
+		log.info("user loggedIn");
 		return userService.loginUser(id);
 	}//WORKING
 
 	//REGISTER USER
 	@PostMapping
 	public UserEntity registerUser(@RequestBody UserEntity user) {
+		log.info("user Registered:{}", user);
 		return userService.registerUser(user);
 	}//WORKING
 
 	//PURCHASE COURSE
 	@PostMapping("/purchase/{courseId}")
 	public RegisteredCourseEntity purchaseCourse(@RequestHeader Long userId, @PathVariable Long courseId) {
-
+		log.info("course purchased:{}", courseId);
 		return userService.purchaseCourse(courseId, userId);
 
-	}//WORKING																																																	//ADDING A FAVOURITE COURSE
+	}
 
+	//ADDING A FAVOURITE COURSE
 	@PostMapping("/favourite/{registrationId}")
 	public FavouriteCourseEntity addFavouriteCourse(@PathVariable Long registrationId) {
+		log.info("course added to favourites");
 		return userService.favouriteCourse(registrationId);
 	}
 
 	//SEE FAVOURITE COURSE
 	@GetMapping("/favourite/seeAll/{userId}")
 	public List<FavouriteCourseEntity> seeAllFavourite(@PathVariable Long userId) {
+		log.info("listing all the favourite courses");
 		return userService.seeFavouriteCourses(userId);
 	}
 

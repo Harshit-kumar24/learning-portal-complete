@@ -42,6 +42,11 @@ public class UserServiceImpl implements UserService {
 		return userRepository.findAll();//DONE
 	}
 
+	@Override
+	public Optional<UserEntity> getUser(Long id) {
+		return userRepository.findById(id);
+	}
+
 	//deleting an user
 	@Override
 	public void deleteUser(Long id) {
@@ -71,13 +76,6 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public UserEntity registerUser(UserEntity user) {
 		return userRepository.save(user);//DONE
-	}
-
-	//see all purchased courses
-	@Override
-	public List<RegisteredCourseEntity> purchasedCourses(Long userId) {
-		//only service which is not done
-		return registeredCourseRepository.findByUserId(userId);//NOT DONE
 	}
 
 	//purchasing a course 

@@ -1,6 +1,7 @@
 package com.harshit.learningportalnew.service.impl;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -34,7 +35,21 @@ public class CourseServiceImpl implements CourseService {
 
 	@Override
 	public CourseEntity updateCourse(CourseEntity course) {
-		return courseRepository.save(course);
+		Optional<CourseEntity> existingCourse = courseRepository.findById(course.getCourseId());
+
+		if (existingCourse.isPresent()) {
+
+			CourseEntity updatedCourse = existingCourse.get();
+
+			updatedCourse.setTitle(course.getTitle());
+			updatedCourse.setDescription(course.getDescription());
+			updatedCourse.setPrice(course.getPrice());
+			updatedCourse.setCategory(course.getCategory());
+
+			return courseRepository.save(updatedCourse);
+
+		}
+		return new CourseEntity();
 	}
 
 }

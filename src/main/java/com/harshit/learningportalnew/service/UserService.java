@@ -13,6 +13,9 @@ public interface UserService {
 	//get all users
 	List<UserEntity> getAllUsers();
 
+	//get unique user
+	Optional<UserEntity> getUser(Long id);
+
 	//delete users
 	void deleteUser(Long id);
 
@@ -28,9 +31,6 @@ public interface UserService {
 
 	//register user
 	UserEntity registerUser(UserEntity user);
-
-	//see purchased course
-	List<RegisteredCourseEntity> purchasedCourses(Long userId);
 
 	//purchase course
 	RegisteredCourseEntity purchaseCourse(Long courseId, Long userId);
