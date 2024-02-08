@@ -3,9 +3,9 @@
 A spring boot application for publishing and consuming free courses online.
 
 Users can have three roles: 
-- ADMIN	: can create users
-- AUTHOR : can publish courses
-- LEARNER : can enroll in courses, can mark courses as favorite
+- ADMIN	: can create users, delete users & view all users
+- AUTHOR : can publish courses, delete courses, update courses
+- LEARNER : can enroll in courses, can mark courses as favorite, can view all reigstered courses, can view all favourite courses
 
 You can test the api endpoints [here](https://api.postman.com/collections/32720322-f17c1cb0-7f78-4ba4-9fea-bde0296e2dbf?access_key=PMAT-01HNWFYNWHSPNNGH6Y22TEBZR5)
 
